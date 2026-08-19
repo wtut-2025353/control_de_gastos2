@@ -3,11 +3,14 @@ import {
   ElementRef,
   type AfterViewInit,
   type OnInit,
+  type OnDestroy,
   viewChild,
-  inject
+  inject,
+  signal,
+  effect
 } from '@angular/core';
 import { FormsModule } from '@angular/forms';
-import { AuthService } from '../../services/auth.service';
+import { AuthService, type AuthResult } from '../../services/auth.service';
 import { environment } from '../../../environments/environment';
 
 interface GoogleAccounts {
@@ -34,82 +37,130 @@ declare global {
   templateUrl: './login.html',
   styleUrl: './login.css'
 })
-export class LoginComponent implements OnInit, AfterViewInit {
+export class LoginComponent implements OnInit, AfterViewInit, OnDestroy {
   email = '';
   password = '';
-  showPassword = false;
-  loading = false;
-  errorMessage = '';
-  loggedIn = false;
+  showPassword = signal(false);
+  loading = signal(false);
+  errorMessage = signal('');
+  loggedIn = signal(false);
+  role = signal('');
+  googleReady = signal(false);
 
   readonly hasGoogle = !!environment.googleClientId;
+
+  private expiryTimer: ReturnType<typeof setTimeout> | undefined;
 
   private readonly googleButton = viewChild<ElementRef<HTMLDivElement>>('googleButton');
   private readonly authService = inject(AuthService);
 
+  private readonly googleEffect = effect(() => {
+    const showForm = !this.loggedIn();
+    const container = this.googleButton();
+    const ready = this.googleReady();
+    if (showForm && ready && container) {
+      this.renderGoogleButton();
+    }
+  });
+
+  ngOnDestroy(): void {
+    this.clearExpiry();
+  }
+
   ngOnInit(): void {
     const token = localStorage.getItem('token');
-    if (token) {
-      if (this.authService.isSessionExpired()) {
-        this.authService.logout();
-        this.errorMessage = 'Tu sesión ha expirado. Por favor inicia sesión nuevamente.';
-      } else {
-        this.loggedIn = true;
-      }
+    if (!token) return;
+    if (this.authService.isExpired(token)) {
+      this.onSessionExpired();
+    } else {
+      const stored = this.authService.getStoredUser();
+      this.loggedIn.set(true);
+      this.role.set(stored?.role ?? '');
+      this.scheduleExpiry(token);
     }
   }
 
   ngAfterViewInit(): void {
-    this.loadGoogleScript()
-      .then(() => this.renderGoogleButton())
-      .catch(() => {
-        this.errorMessage = 'No se pudo cargar el botón de Google';
-      });
+    if (environment.googleClientId) {
+      this.loadGoogleScript()
+        .then(() => this.googleReady.set(true))
+        .catch(() => {
+          this.errorMessage.set('No se pudo cargar el botón de Google');
+        });
+    }
+  }
+
+  private setSession(result: AuthResult): void {
+    this.authService.saveSession(result);
+    this.loading.set(false);
+    this.loggedIn.set(true);
+    this.role.set(result.user.role);
+    this.scheduleExpiry(result.token);
   }
 
   handleLogin(): void {
-    this.errorMessage = '';
+    this.errorMessage.set('');
     if (!this.email.trim() || !this.password) {
-      this.errorMessage = 'Ingresa tu correo y contraseña';
+      this.errorMessage.set('Ingresa tu correo y contraseña');
       return;
     }
-    this.loading = true;
+    this.loading.set(true);
     this.authService.login(this.email.trim(), this.password).subscribe({
-      next: (result) => {
-        localStorage.setItem('token', result.token);
-        this.loading = false;
-        this.loggedIn = true;
-      },
+      next: (result) => this.setSession(result),
       error: (error) => {
-        this.loading = false;
-        this.errorMessage = error?.error?.message ?? 'Error al iniciar sesión';
+        this.loading.set(false);
+        this.errorMessage.set(error?.error?.message ?? 'Error al iniciar sesión');
       }
     });
   }
 
   handleLogout(): void {
+    this.clearExpiry();
     this.authService.logout();
-    this.loggedIn = false;
+    this.loggedIn.set(false);
+    this.loading.set(false);
+    this.password = '';
   }
 
   private readonly handleGoogleResponse = (response: { credential?: string }): void => {
     if (!response.credential) {
-      this.errorMessage = 'No se recibió la credencial de Google';
+      this.errorMessage.set('No se recibió la credencial de Google');
       return;
     }
-    this.loading = true;
+    this.loading.set(true);
     this.authService.loginWithGoogle(response.credential).subscribe({
-      next: (result) => {
-        localStorage.setItem('token', result.token);
-        this.loading = false;
-        this.loggedIn = true;
-      },
+      next: (result) => this.setSession(result),
       error: (error) => {
-        this.loading = false;
-        this.errorMessage = error?.error?.message ?? 'Error al iniciar sesión con Google';
+        this.loading.set(false);
+        this.errorMessage.set(error?.error?.message ?? 'Error al iniciar sesión con Google');
       }
     });
   };
+
+  private scheduleExpiry(token: string): void {
+    this.clearExpiry();
+    const ms = this.authService.getExpiryMs(token);
+    if (ms <= 0) {
+      this.onSessionExpired();
+      return;
+    }
+    this.expiryTimer = setTimeout(() => this.onSessionExpired(), ms);
+  }
+
+  private clearExpiry(): void {
+    if (this.expiryTimer !== undefined) {
+      clearTimeout(this.expiryTimer);
+      this.expiryTimer = undefined;
+    }
+  }
+
+  private onSessionExpired(): void {
+    this.clearExpiry();
+    this.authService.logout();
+    this.loggedIn.set(false);
+    this.loading.set(false);
+    this.errorMessage.set('Tu sesión ha expirado. Vuelve a iniciar sesión.');
+  }
 
   private renderGoogleButton(): void {
     const container = this.googleButton()?.nativeElement;
@@ -117,11 +168,11 @@ export class LoginComponent implements OnInit, AfterViewInit {
     if (!container || !google?.accounts) {
       return;
     }
-    const clientId = environment.googleClientId || '923643550096-kvgbige4bc3ms2khrr87o55gfbnqt63t.apps.googleusercontent.com';
     google.accounts.id.initialize({
-      client_id: clientId,
+      client_id: environment.googleClientId,
       callback: this.handleGoogleResponse
     });
+    container.innerHTML = '';
     google.accounts.id.renderButton(container, {
       theme: 'outline',
       size: 'large',
