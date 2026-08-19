@@ -158,6 +158,9 @@
   margin-top: 1rem;
   display: flex;
   justify-content: center;
+  align-items: center;
+  min-height: 44px;
+  width: 100%;
 }
 
 .forgot-row {
