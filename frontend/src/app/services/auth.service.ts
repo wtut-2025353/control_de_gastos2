@@ -18,6 +18,8 @@ export interface AuthResult {
 @Injectable({ providedIn: 'root' })
 export class AuthService {
   private readonly api = '/api/auth';
+  private readonly tokenKey = 'token';
+  private readonly userKey = 'user';
 
   constructor(private readonly http: HttpClient) {}
 
@@ -29,19 +31,45 @@ export class AuthService {
     return this.http.post<AuthResult>(`${this.api}/google`, { credential });
   }
 
-  logout(): void {
-    localStorage.removeItem('token');
-    localStorage.removeItem('user');
+  saveSession(result: AuthResult): void {
+    localStorage.setItem(this.tokenKey, result.token);
+    localStorage.setItem(this.userKey, JSON.stringify(result.user));
   }
 
-  isSessionExpired(): boolean {
-    const token = localStorage.getItem('token');
-    if (!token) return true;
+  getStoredUser(): AuthUser | null {
     try {
-      const payload = JSON.parse(atob(token.split('.')[1]));
-      return payload.exp * 1000 < Date.now();
+      const raw = localStorage.getItem(this.userKey);
+      return raw ? (JSON.parse(raw) as AuthUser) : null;
     } catch {
-      return true;
+      return null;
+    }
+  }
+
+  logout(): void {
+    localStorage.removeItem(this.tokenKey);
+    localStorage.removeItem(this.userKey);
+  }
+
+  getExpiryMs(token: string): number {
+    const exp = this.getExp(token);
+    if (exp === null) return 0;
+    const remaining = exp * 1000 - Date.now();
+    return remaining > 0 ? remaining : 0;
+  }
+
+  isExpired(token: string): boolean {
+    return this.getExpiryMs(token) <= 0;
+  }
+
+  private getExp(token: string): number | null {
+    try {
+      const payload = token.split('.')[1];
+      if (!payload) return null;
+      const normalized = payload.replace(/-/g, '+').replace(/_/g, '/');
+      const json = JSON.parse(atob(normalized));
+      return typeof json.exp === 'number' ? json.exp : null;
+    } catch {
+      return null;
     }
   }
 }
