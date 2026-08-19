@@ -60,13 +60,11 @@ export class LoginComponent implements OnInit, AfterViewInit {
   }
 
   ngAfterViewInit(): void {
-    if (environment.googleClientId) {
-      this.loadGoogleScript()
-        .then(() => this.renderGoogleButton())
-        .catch(() => {
-          this.errorMessage = 'No se pudo cargar el botón de Google';
-        });
-    }
+    this.loadGoogleScript()
+      .then(() => this.renderGoogleButton())
+      .catch(() => {
+        this.errorMessage = 'No se pudo cargar el botón de Google';
+      });
   }
 
   handleLogin(): void {
@@ -119,8 +117,9 @@ export class LoginComponent implements OnInit, AfterViewInit {
     if (!container || !google?.accounts) {
       return;
     }
+    const clientId = environment.googleClientId || '923643550096-kvgbige4bc3ms2khrr87o55gfbnqt63t.apps.googleusercontent.com';
     google.accounts.id.initialize({
-      client_id: environment.googleClientId,
+      client_id: clientId,
       callback: this.handleGoogleResponse
     });
     google.accounts.id.renderButton(container, {
