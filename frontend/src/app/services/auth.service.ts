@@ -28,4 +28,9 @@ export class AuthService {
   loginWithGoogle(credential: string): Observable<AuthResult> {
     return this.http.post<AuthResult>(`${this.api}/google`, { credential });
   }
+
+  logout(): void {
+    localStorage.removeItem('token');
+    localStorage.removeItem('user');
+  }
 }

@@ -76,6 +76,11 @@ export class LoginComponent implements AfterViewInit {
     });
   }
 
+  handleLogout(): void {
+    this.authService.logout();
+    this.loggedIn = false;
+  }
+
   private readonly handleGoogleResponse = (response: { credential?: string }): void => {
     if (!response.credential) {
       this.errorMessage = 'No se recibió la credencial de Google';
