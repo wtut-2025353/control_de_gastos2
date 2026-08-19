@@ -1,4 +1,4 @@
-@if (loggedIn) {
+@if (loggedIn()) {
   <div class="success-screen">
     <div class="success-panel">
       <svg
@@ -14,7 +14,7 @@
         <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path>
         <polyline points="22 4 12 14.01 9 11.01"></polyline>
       </svg>
-      <h1>Sesión iniciada</h1>
+      <h1>Iniciado sesión como {{ role() }}</h1>
       <button type="button" class="btn-logout" (click)="handleLogout()">Cerrar sesión</button>
     </div>
   </div>
@@ -73,8 +73,8 @@
           <a href="#" (click)="$event.preventDefault()">Crea una nueva ahora</a>
         </p>
 
-        @if (errorMessage) {
-          <div class="error" role="alert">{{ errorMessage }}</div>
+        @if (errorMessage()) {
+          <div class="error" role="alert">{{ errorMessage() }}</div>
         }
 
         <form (ngSubmit)="handleLogin()">
@@ -94,7 +94,7 @@
             <input
               id="password"
               name="password"
-              [type]="showPassword ? 'text' : 'password'"
+              [type]="showPassword() ? 'text' : 'password'"
               [(ngModel)]="password"
               placeholder="Password"
               autocomplete="current-password"
@@ -103,10 +103,10 @@
             <button
               type="button"
               class="eye-toggle"
-              (click)="showPassword = !showPassword"
-              [attr.aria-label]="showPassword ? 'Ocultar contraseña' : 'Mostrar contraseña'"
+              (click)="showPassword.set(!showPassword())"
+              [attr.aria-label]="showPassword() ? 'Ocultar contraseña' : 'Mostrar contraseña'"
             >
-              @if (showPassword) {
+              @if (showPassword()) {
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
                   width="20"
@@ -142,8 +142,8 @@
             </button>
           </div>
 
-          <button type="submit" class="btn-primary" [disabled]="loading">
-            {{ loading ? 'Iniciando...' : 'Iniciar sesión' }}
+          <button type="submit" class="btn-primary" [disabled]="loading()">
+            {{ loading() ? 'Iniciando...' : 'Iniciar sesión' }}
           </button>
         </form>
 
