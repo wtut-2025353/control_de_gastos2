@@ -205,26 +205,28 @@
 }
 
 .success-panel h1 {
-  font-size: 1.5rem;
-  font-weight: 600;
+  font-size: 1.6rem;
+  font-weight: 700;
   color: #111827;
-  margin: 0;
+  margin: 0 0 0.75rem;
 }
 
 .btn-logout {
   margin-top: 1.5rem;
-  padding: 0.75rem 1.5rem;
-  background-color: #ef4444;
-  color: #ffffff;
-  border: none;
-  border-radius: 0.5rem;
+  padding: 0.7rem 1.75rem;
+  font-size: 0.95rem;
   font-weight: 600;
+  color: #b00020;
+  background: transparent;
+  border: 1px solid #e5e7eb;
+  border-radius: 8px;
   cursor: pointer;
-  transition: background-color 0.2s ease;
+  transition: background 0.15s ease, border-color 0.15s ease;
 }
 
 .btn-logout:hover {
-  background-color: #dc2626;
+  background: #fdf2f2;
+  border-color: #f5c6c6;
 }
 
 /* ---------- Desktop: split 2 columnas ---------- */
