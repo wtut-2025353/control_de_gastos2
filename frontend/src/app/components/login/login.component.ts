@@ -2,6 +2,7 @@ import {
   Component,
   ElementRef,
   type AfterViewInit,
+  type OnInit,
   viewChild,
   inject
 } from '@angular/core';
@@ -33,7 +34,7 @@ declare global {
   templateUrl: './login.html',
   styleUrl: './login.css'
 })
-export class LoginComponent implements AfterViewInit {
+export class LoginComponent implements OnInit, AfterViewInit {
   email = '';
   password = '';
   showPassword = false;
@@ -45,6 +46,18 @@ export class LoginComponent implements AfterViewInit {
 
   private readonly googleButton = viewChild<ElementRef<HTMLDivElement>>('googleButton');
   private readonly authService = inject(AuthService);
+
+  ngOnInit(): void {
+    const token = localStorage.getItem('token');
+    if (token) {
+      if (this.authService.isSessionExpired()) {
+        this.authService.logout();
+        this.errorMessage = 'Tu sesión ha expirado. Por favor inicia sesión nuevamente.';
+      } else {
+        this.loggedIn = true;
+      }
+    }
+  }
 
   ngAfterViewInit(): void {
     if (environment.googleClientId) {
