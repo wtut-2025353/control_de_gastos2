@@ -1,5 +1,5 @@
 import type { Request, Response } from "express";
-import { AuthError, loginWithEmail, loginWithGoogle } from "../services/auth.service.js";
+import { AuthError, loginWithEmail, loginWithGoogle, refresh_token } from "../services/auth.service.js";
 
 export async function login(req: Request, res: Response): Promise<void> {
   const { email, password } = req.body as { email?: string; password?: string };
@@ -9,6 +9,23 @@ export async function login(req: Request, res: Response): Promise<void> {
   }
   try {
     const result = await loginWithEmail(email, password);
+    res.json(result);
+  } catch (error) {
+    if (error instanceof AuthError) {
+      res.status(error.statusCode).json({ message: error.message });
+      return;
+    }
+    res.status(500).json({ message: "Error interno del servidor" });
+  }
+}
+
+export async function refresh(req: Request, res: Response): Promise<void> {
+  if (!req.user) {
+    res.status(401).json({ message: "No autorizado" });
+    return;
+  }
+  try {
+    const result = await refresh_token(req.user.id);
     res.json(result);
   } catch (error) {
     if (error instanceof AuthError) {
