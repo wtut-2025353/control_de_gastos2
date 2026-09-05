@@ -2,6 +2,10 @@ import express from "express";
 import cors from "cors";
 import authRoutes from "./modules/auth/routes/auth.routes.js";
 import userRoutes from "./modules/users/routes/user.routes.js";
+import incomeRoutes from "./modules/incomes/routes/income.routes.js";
+import expenseRoutes from "./modules/expenses/routes/expense.routes.js";
+import budgetRoutes from "./modules/budgets/routes/budget.routes.js";
+import dashboardRoutes from "./modules/dashboard/dashboard.routes.js";
 import { env } from "./config/env.js";
 
 export function createApp(): express.Express {
@@ -21,6 +25,10 @@ export function createApp(): express.Express {
 
   app.use("/api/auth", authRoutes);
   app.use("/api/users", userRoutes);
+  app.use("/api/incomes", incomeRoutes);
+  app.use("/api/expenses", expenseRoutes);
+  app.use("/api/budgets", budgetRoutes);
+  app.use("/api/dashboard", dashboardRoutes);
 
   app.use((_req, res) => {
     res.status(404).json({ message: "Ruta no encontrada" });

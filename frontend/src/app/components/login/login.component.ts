@@ -10,6 +10,7 @@ import {
   effect
 } from '@angular/core';
 import { FormsModule } from '@angular/forms';
+import { Router } from '@angular/router';
 import { AuthService, type AuthResult } from '../../services/auth.service';
 import { environment } from '../../../environments/environment';
 
@@ -53,6 +54,7 @@ export class LoginComponent implements OnInit, AfterViewInit, OnDestroy {
 
   private readonly googleButton = viewChild<ElementRef<HTMLDivElement>>('googleButton');
   private readonly authService = inject(AuthService);
+  private readonly router = inject(Router);
 
   private readonly googleEffect = effect(() => {
     const showForm = !this.loggedIn();
@@ -68,15 +70,17 @@ export class LoginComponent implements OnInit, AfterViewInit, OnDestroy {
   }
 
   ngOnInit(): void {
+    const expired = localStorage.getItem('session_expired');
+    if (expired) {
+      localStorage.removeItem('session_expired');
+      this.errorMessage.set('Su sesion ha expirado. Vuelva a iniciar sesion.');
+    }
     const token = localStorage.getItem('token');
     if (!token) return;
     if (this.authService.isExpired(token)) {
       this.onSessionExpired();
     } else {
-      const stored = this.authService.getStoredUser();
-      this.loggedIn.set(true);
-      this.role.set(stored?.role ?? '');
-      this.scheduleExpiry(token);
+      this.router.navigate(['/dashboard']);
     }
   }
 
@@ -93,15 +97,13 @@ export class LoginComponent implements OnInit, AfterViewInit, OnDestroy {
   private setSession(result: AuthResult): void {
     this.authService.saveSession(result);
     this.loading.set(false);
-    this.loggedIn.set(true);
-    this.role.set(result.user.role);
-    this.scheduleExpiry(result.token);
+    this.router.navigate(['/dashboard']);
   }
 
   handleLogin(): void {
     this.errorMessage.set('');
     if (!this.email.trim() || !this.password) {
-      this.errorMessage.set('Ingresa tu correo y contraseña');
+      this.errorMessage.set('Ingrese su correo y contrasena');
       return;
     }
     this.loading.set(true);
@@ -159,7 +161,7 @@ export class LoginComponent implements OnInit, AfterViewInit, OnDestroy {
     this.authService.logout();
     this.loggedIn.set(false);
     this.loading.set(false);
-    this.errorMessage.set('Tu sesión ha expirado. Vuelve a iniciar sesión.');
+    this.errorMessage.set('Su sesion ha expirado. Vuelva a iniciar sesion.');
   }
 
   private renderGoogleButton(): void {
