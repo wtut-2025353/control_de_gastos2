@@ -95,3 +95,12 @@ export async function loginWithGoogle(credential: string): Promise<AuthResult> {
   const result = toPayload(user);
   return { token: signToken(result), user: result };
 }
+
+export async function refresh_token(userId: string): Promise<AuthResult> {
+  const user = await User.findById(userId);
+  if (!user) {
+    throw new AuthError("Usuario no encontrado", 404);
+  }
+  const payload = toPayload(user);
+  return { token: signToken(payload), user: payload };
+}
