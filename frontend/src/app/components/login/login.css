@@ -20,16 +20,50 @@
 /* ---------- Columna derecha (formulario) ---------- */
 .panel-right {
   flex: 1;
+  position: relative;
   display: flex;
   align-items: flex-start;
   justify-content: center;
   padding: 2.5rem 1.5rem;
-  background: #ffffff;
+  background: linear-gradient(160deg, #f4f6f6 0%, #e5e9ea 100%);
+  overflow: hidden;
+}
+
+.panel-right::before,
+.panel-right::after {
+  content: '';
+  position: absolute;
+  border-radius: 50%;
+  pointer-events: none;
+  filter: blur(70px);
+}
+
+.panel-right::before {
+  width: 420px;
+  height: 420px;
+  background: rgba(143, 166, 164, 0.3);
+  top: -140px;
+  right: -140px;
+}
+
+.panel-right::after {
+  width: 380px;
+  height: 380px;
+  background: rgba(52, 88, 82, 0.16);
+  bottom: -160px;
+  left: -120px;
 }
 
 .form-box {
   width: 100%;
-  max-width: 420px;
+  max-width: 440px;
+  position: relative;
+  z-index: 1;
+  background: #ffffff;
+  border: 1px solid #ced3d4;
+  border-radius: 20px;
+  padding: 2.75rem 2rem;
+  box-shadow: 0 24px 60px -24px rgba(28, 43, 58, 0.28);
 }
 
 .brand-inline {
@@ -48,25 +82,25 @@
 .brand-inline .brand-name {
   font-weight: 700;
   font-size: 1.05rem;
-  color: #111827;
+  color: #1c2b3a;
 }
 
 .form-box h2 {
   font-size: 2rem;
   font-weight: 800;
   letter-spacing: -0.02em;
-  color: #111827;
+  color: #1c2b3a;
   margin: 0 0 0.5rem;
 }
 
 .subtitle {
-  color: #6b7280;
+  color: #7b8a8d;
   font-size: 0.95rem;
   margin: 0 0 2.25rem;
 }
 
 .subtitle a {
-  color: #3730e0;
+  color: #4b706b;
   text-decoration: underline;
   font-weight: 500;
 }
@@ -90,10 +124,10 @@
   width: 100%;
   padding: 0.65rem 0;
   font-size: 1rem;
-  color: #111827;
+  color: #1c2b3a;
   background: transparent;
   border: none;
-  border-bottom: 2px solid #e5e7eb;
+  border-bottom: 2px solid #ced3d4;
   border-radius: 0;
   outline: none;
   transition: border-color 0.15s ease;
@@ -101,11 +135,11 @@
 }
 
 .field input::placeholder {
-  color: #9ca3af;
+  color: #949ca4;
 }
 
 .field input:focus {
-  border-bottom-color: #3730e0;
+  border-bottom-color: #345852;
 }
 
 .password-field input {
@@ -119,7 +153,7 @@
   background: none;
   border: none;
   cursor: pointer;
-  color: #9ca3af;
+  color: #949ca4;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -129,7 +163,7 @@
 }
 
 .eye-toggle:hover {
-  color: #111827;
+  color: #1c2b3a;
 }
 
 .btn-primary {
@@ -138,7 +172,7 @@
   font-size: 1rem;
   font-weight: 600;
   color: #ffffff;
-  background: #111827;
+  background: #1c2b3a;
   border: none;
   border-radius: 8px;
   cursor: pointer;
@@ -163,6 +197,11 @@
   width: 100%;
 }
 
+.google-container iframe {
+  width: 100% !important;
+  max-width: 360px;
+}
+
 .forgot-row {
   margin-top: 1.25rem;
   text-align: right;
@@ -170,44 +209,54 @@
 
 .forgot-link {
   font-size: 0.85rem;
-  color: #6b7280;
+  color: #7b8a8d;
   text-decoration: none;
 }
 
 .forgot-link:hover {
-  color: #3730e0;
+  color: #4b706b;
 }
 
 /* ---------- Pantalla de éxito ---------- */
+@keyframes fade-in {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
 .success-screen {
   min-height: 100vh;
   display: flex;
   align-items: center;
   justify-content: center;
   padding: 1rem;
-  background: #f7f8fa;
+  background: #eef1f1;
   animation: fade-in 0.4s ease;
 }
 
 .success-panel {
   background: #ffffff;
-  border: 1px solid #e6e6e6;
+  border: 1px solid #ced3d4;
   border-radius: 16px;
   padding: 3rem 2.5rem;
   text-align: center;
+  box-shadow: 0 24px 60px -24px rgba(28, 43, 58, 0.28);
 }
 
 .success-panel .check {
   width: 64px;
   height: 64px;
-  color: #2e7d32;
+  color: #345852;
   margin-bottom: 1rem;
 }
 
 .success-panel h1 {
   font-size: 1.6rem;
   font-weight: 700;
-  color: #111827;
+  color: #1c2b3a;
   margin: 0 0 0.75rem;
 }
 
@@ -216,17 +265,17 @@
   padding: 0.7rem 1.75rem;
   font-size: 0.95rem;
   font-weight: 600;
-  color: #b00020;
+  color: #345852;
   background: transparent;
-  border: 1px solid #e5e7eb;
+  border: 1px solid #ced3d4;
   border-radius: 8px;
   cursor: pointer;
   transition: background 0.15s ease, border-color 0.15s ease;
 }
 
 .btn-logout:hover {
-  background: #fdf2f2;
-  border-color: #f5c6c6;
+  background: #eef1f1;
+  border-color: #4b706b;
 }
 
 /* ---------- Desktop: split 2 columnas ---------- */
@@ -241,8 +290,8 @@
     justify-content: space-between;
     flex: 0 0 45%;
     padding: 3rem 3.5rem;
-    background-color: #3730e0;
-    background-image: linear-gradient(rgba(17, 24, 39, 0.45), rgba(17, 24, 39, 0.45)),
+    background-color: #345852;
+    background-image: linear-gradient(140deg, rgba(28, 43, 58, 0.82), rgba(52, 88, 82, 0.86)),
       url('/fondo-login.webp');
     background-size: cover;
     background-position: center;
@@ -261,10 +310,12 @@
   }
 
   .panel-left .brand .logo-invert {
-    width: 36px;
-    height: 36px;
+    width: 40px;
+    height: 40px;
     object-fit: contain;
-    filter: invert(1);
+    background: #ffffff;
+    border-radius: 10px;
+    padding: 4px;
   }
 
   .panel-left .brand-name {
