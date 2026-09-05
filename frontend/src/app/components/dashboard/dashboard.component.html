@@ -1,0 +1,257 @@
+<!-- Sidebar -->
+<aside class="sidebar" [class.open]="mobileMenuOpen()">
+  <div class="sidebar-top">
+    <div class="logo-container">
+      <img src="logo.png" alt="Control de Gastos" class="sidebar-logo" />
+    </div>
+
+    <nav class="sidebar-nav">
+      <a class="nav-item active" (click)="closeMobileMenu()">
+        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/>
+          <polyline points="9 22 9 12 15 12 15 22"/>
+        </svg>
+        <span>Inicio</span>
+      </a>
+      <a class="nav-item" href="#" [class.active]="showBudgetOptions()" (click)="$event.preventDefault(); toggleBudgetOptions()">
+        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <line x1="12" y1="1" x2="12" y2="23"/>
+          <path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/>
+        </svg>
+        <span>Presupuestos</span>
+      </a>
+      @if (showBudgetOptions()) {
+        <div class="submenu">
+          <button type="button" class="submenu-item" disabled title="Proximamente">Gastos</button>
+          <button type="button" class="submenu-item" (click)="goIngresos(); closeMobileMenu()">Ingresos</button>
+        </div>
+      }
+      <a class="nav-item" href="#" (click)="$event.preventDefault(); closeMobileMenu()">
+        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <line x1="18" y1="20" x2="18" y2="10"/>
+          <line x1="12" y1="20" x2="12" y2="4"/>
+          <line x1="6" y1="20" x2="6" y2="14"/>
+        </svg>
+        <span>Reportes</span>
+      </a>
+      <a class="nav-item" href="#" (click)="$event.preventDefault(); closeMobileMenu()">
+        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <circle cx="12" cy="12" r="3"/>
+          <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"/>
+        </svg>
+        <span>Ajustes</span>
+      </a>
+    </nav>
+  </div>
+
+  <div class="sidebar-bottom">
+    <div class="sidebar-divider"></div>
+    <button class="logout-btn" (click)="logout()">
+      <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/>
+        <polyline points="16 17 21 12 16 7"/>
+        <line x1="21" y1="12" x2="9" y2="12"/>
+      </svg>
+      <span>Cerrar sesion</span>
+    </button>
+  </div>
+</aside>
+
+<!-- Mobile overlay -->
+<div class="sidebar-overlay" [class.visible]="mobileMenuOpen()" (click)="closeMobileMenu()"></div>
+
+<!-- Main content -->
+<div class="main-wrapper">
+  <!-- Mobile header -->
+  <header class="mobile-header">
+    <button class="menu-toggle" (click)="toggleMobileMenu()">
+      <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <line x1="3" y1="12" x2="21" y2="12"/>
+        <line x1="3" y1="6" x2="21" y2="6"/>
+        <line x1="3" y1="18" x2="21" y2="18"/>
+      </svg>
+    </button>
+    <span class="mobile-title">Control de Gastos</span>
+  </header>
+
+  <main class="content">
+    <!-- Error state -->
+    @if (error()) {
+      <div class="error-state">
+        <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="#b00020" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+          <circle cx="12" cy="12" r="10"/>
+          <line x1="12" y1="8" x2="12" y2="12"/>
+          <line x1="12" y1="16" x2="12.01" y2="16"/>
+        </svg>
+        <h3>{{ error() }}</h3>
+        <p>Verifique su conexion e intentelo de nuevo.</p>
+        <button class="retry-btn" (click)="loadData()">Reintentar</button>
+      </div>
+    }
+
+    <!-- Loading state -->
+    @if (loading() && !error()) {
+      <div class="greeting-skeleton skeleton"></div>
+      <div class="subtitle-skeleton skeleton"></div>
+      <div class="cards-grid">
+        @for (i of [1,2,3,4]; track i) {
+          <div class="summary-card skeleton-card">
+            <div class="skeleton skeleton-label"></div>
+            <div class="skeleton skeleton-value"></div>
+            <div class="skeleton skeleton-variation"></div>
+          </div>
+        }
+      </div>
+      <div class="chart-card skeleton-card">
+        <div class="skeleton skeleton-title"></div>
+        <div class="skeleton skeleton-chart"></div>
+      </div>
+      <div class="bottom-grid">
+        <div class="bottom-card skeleton-card">
+          <div class="skeleton skeleton-title"></div>
+          <div class="skeleton skeleton-chart"></div>
+        </div>
+        <div class="bottom-card skeleton-card">
+          <div class="skeleton skeleton-title"></div>
+          <div class="skeleton skeleton-list"></div>
+        </div>
+      </div>
+    }
+
+    <!-- Dashboard content -->
+    @if (!loading() && !error()) {
+      <!-- Header -->
+      <div class="header">
+        <h1>Hola, {{ userName() }}</h1>
+        <p class="subtitle">Resumen general de sus finanzas</p>
+      </div>
+
+      @if (!hasData()) {
+        <!-- Empty state -->
+        <div class="empty-state">
+          <svg xmlns="http://www.w3.org/2000/svg" width="56" height="56" viewBox="0 0 24 24" fill="none" stroke="#8fa6a4" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+            <rect x="2" y="3" width="20" height="14" rx="2" ry="2"/>
+            <line x1="8" y1="21" x2="16" y2="21"/>
+            <line x1="12" y1="17" x2="12" y2="21"/>
+          </svg>
+          <h3>Aun no tiene movimientos</h3>
+          <p>Agregue su primer ingreso o gasto para comenzar a visualizar su resumen financiero.</p>
+        </div>
+      } @else {
+        <!-- Summary cards -->
+        <div class="cards-grid">
+          <div class="summary-card">
+            <span class="card-label">Balance total</span>
+            <span class="card-value">{{ formatMoney(balance()) }}</span>
+            <span class="card-variation positive">{{ formatVariation(balanceVariation()) }}</span>
+          </div>
+          <div class="summary-card clickable" (click)="goIngresos()">
+            <span class="card-label">Ingresos</span>
+            <span class="card-value">{{ formatMoney(totalIncome()) }}</span>
+            <span class="card-variation positive">{{ formatVariation(incomeVariation()) }}</span>
+          </div>
+          <div class="summary-card">
+            <span class="card-label">Gastos</span>
+            <span class="card-value">{{ formatMoney(totalExpenses()) }}</span>
+            <span class="card-variation" [class.negative]="expenseVariation() > 0" [class.positive]="expenseVariation() <= 0">{{ formatVariation(expenseVariation()) }}</span>
+          </div>
+          <div class="summary-card">
+            <span class="card-label">Ahorros</span>
+            <span class="card-value">{{ formatMoney(savings()) }}</span>
+            <span class="card-variation" [class.positive]="savingsVariation() >= 0" [class.negative]="savingsVariation() < 0">{{ formatVariation(savingsVariation()) }}</span>
+          </div>
+        </div>
+
+        <!-- Activity chart -->
+        <div class="chart-card">
+          <div class="chart-header">
+            <h2>Resumen de actividad</h2>
+            <div class="chart-controls">
+              <div class="legend">
+                <span class="legend-item"><span class="legend-dot income"></span>Ingresos</span>
+                <span class="legend-item"><span class="legend-dot expense"></span>Gastos</span>
+              </div>
+              <div class="period-selector">
+                @for (p of [1, 3, 6, 12]; track p) {
+                  <button class="period-btn" [class.active]="period() === p" (click)="setPeriod(p)">
+                    {{ p }}m
+                  </button>
+                }
+              </div>
+            </div>
+          </div>
+          <div class="chart-container">
+            <canvas baseChart
+              [data]="lineChartData"
+              [options]="lineChartOptions"
+              type="line">
+            </canvas>
+          </div>
+        </div>
+
+        <!-- Bottom section -->
+        <div class="bottom-grid">
+          <!-- Monthly budget -->
+          <div class="bottom-card">
+            <h2 class="budget-title" (click)="toggleBudgetOptions()" title="Clic para mostrar opciones">Presupuesto mensual</h2>
+            <div class="budget-content">
+              <div class="donut-wrapper">
+                <canvas baseChart
+                  [data]="donutChartData"
+                  [options]="donutChartOptions"
+                  type="doughnut">
+                </canvas>
+                <div class="donut-center">
+                  <span class="donut-percent">{{ budgetPercentage() }}%</span>
+                  <span class="donut-label">en total</span>
+                </div>
+              </div>
+              <div class="budget-details">
+                <div class="budget-row">
+                  <span class="budget-dot spent"></span>
+                  <div class="budget-info">
+                    <span class="budget-detail-label">Gastado</span>
+                    <span class="budget-detail-value">{{ formatMoney(budgetSpent()) }}</span>
+                  </div>
+                </div>
+                <div class="budget-row">
+                  <span class="budget-dot remaining"></span>
+                  <div class="budget-info">
+                    <span class="budget-detail-label">Restante</span>
+                    <span class="budget-detail-value">{{ formatMoney(budgetRemaining()) }}</span>
+                  </div>
+                </div>
+              </div>
+              @if (showBudgetOptions()) {
+                <div class="budget-actions">
+                  <button type="button" class="budget-btn" disabled title="Proximamente">Gastos</button>
+                  <button type="button" class="budget-btn primary" (click)="goIngresos()">Ingresos</button>
+                </div>
+              }
+            </div>
+          </div>
+
+          <!-- Category expenses -->
+          <div class="bottom-card">
+            <h2>Gasto por categoria</h2>
+            <div class="category-list">
+              @for (cat of categoryBreakdown(); track cat.category) {
+                <div class="category-row">
+                  <span class="category-dot" [style.background]="getCategoryColor(cat.category)"></span>
+                  <span class="category-name">{{ getCategoryLabel(cat.category) }}</span>
+                  <span class="category-percent">{{ cat.percentage }}%</span>
+                  <div class="category-bar-track">
+                    <div class="category-bar-fill" [style.width.%]="cat.percentage" [style.background]="getCategoryColor(cat.category)"></div>
+                  </div>
+                </div>
+              }
+              @if (categoryBreakdown().length === 0) {
+                <div class="no-categories">No hay gastos registrados este mes.</div>
+              }
+            </div>
+          </div>
+        </div>
+      }
+    }
+  </main>
+</div>
