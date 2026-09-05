@@ -1,11 +1,12 @@
 import { createApp } from "./apps.js";
 import { connectDB } from "./config/db.js";
 import { env } from "./config/env.js";
-import { seedDefaultUsers } from "./seed/seed.js";
+import { seedDefaultUsers, seedFinancialData } from "./seed/seed.js";
 
 async function main(): Promise<void> {
   await connectDB();
   await seedDefaultUsers();
+  await seedFinancialData();
 
   const app = createApp();
   app.listen(env.PORT, () => {
