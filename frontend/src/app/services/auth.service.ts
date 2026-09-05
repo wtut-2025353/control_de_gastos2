@@ -50,6 +50,14 @@ export class AuthService {
     localStorage.removeItem(this.userKey);
   }
 
+  refreshToken(): Observable<AuthResult> {
+    return this.http.post<AuthResult>(`${this.api}/refresh`, {});
+  }
+
+  getToken(): string | null {
+    return localStorage.getItem(this.tokenKey);
+  }
+
   getExpiryMs(token: string): number {
     const exp = this.getExp(token);
     if (exp === null) return 0;
