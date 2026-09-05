@@ -1,162 +1,140 @@
-@if (loggedIn()) {
-  <div class="success-screen">
-    <div class="success-panel">
-      <svg
-        class="check"
-        xmlns="http://www.w3.org/2000/svg"
-        viewBox="0 0 24 24"
+<div class="split">
+  <aside class="panel-left">
+    <svg
+      class="decor"
+      viewBox="0 0 500 500"
+      preserveAspectRatio="xMaxYMax meet"
+      aria-hidden="true"
+    >
+      <path
+        d="M50 470 C 180 380, 320 420, 470 300"
         fill="none"
-        stroke="currentColor"
+        stroke="rgba(255,255,255,0.09)"
         stroke-width="2"
-        stroke-linecap="round"
-        stroke-linejoin="round"
-      >
-        <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path>
-        <polyline points="22 4 12 14.01 9 11.01"></polyline>
-      </svg>
-      <h1>Iniciado sesión como {{ role() }}</h1>
-      <button type="button" class="btn-logout" (click)="handleLogout()">Cerrar sesión</button>
-    </div>
-  </div>
-} @else {
-  <div class="split">
-    <aside class="panel-left">
-      <svg
-        class="decor"
-        viewBox="0 0 500 500"
-        preserveAspectRatio="xMaxYMax meet"
-        aria-hidden="true"
-      >
-        <path
-          d="M50 470 C 180 380, 320 420, 470 300"
-          fill="none"
-          stroke="rgba(255,255,255,0.09)"
-          stroke-width="2"
-        />
-        <path
-          d="M30 500 C 150 430, 300 505, 480 385"
-          fill="none"
-          stroke="rgba(255,255,255,0.06)"
-          stroke-width="3"
-        />
-        <circle cx="430" cy="120" r="150" fill="none" stroke="rgba(255,255,255,0.06)" stroke-width="2" />
-      </svg>
+      />
+      <path
+        d="M30 500 C 150 430, 300 505, 480 385"
+        fill="none"
+        stroke="rgba(255,255,255,0.06)"
+        stroke-width="3"
+      />
+      <circle cx="430" cy="120" r="150" fill="none" stroke="rgba(255,255,255,0.06)" stroke-width="2" />
+    </svg>
 
-      <div class="brand">
-        <img src="logo.png" alt="Control de Gastos" class="logo-invert" />
+    <div class="brand">
+      <img src="logo.png" alt="Control de Gastos" class="logo-invert" />
+      <span class="brand-name">Control de Gastos</span>
+    </div>
+
+    <div class="hero">
+      <h1>
+        Controla sus gastos,<br />
+        simplifica su dia
+      </h1>
+      <p>
+        Gestione sus ingresos y gastos de forma simple y segura desde un solo lugar.
+      </p>
+    </div>
+
+    <div class="copyright">&copy; 2026 Control de Gastos. Todos los derechos reservados.</div>
+  </aside>
+
+  <main class="panel-right">
+    <div class="form-box">
+      <div class="brand-inline">
+        <img src="logo.png" alt="Logo" class="logo" />
         <span class="brand-name">Control de Gastos</span>
       </div>
 
-      <div class="hero">
-        <h1>
-          Hello,<br />
-          Control de Gastos!
-        </h1>
-        <p>
-          Gestiona tus ingresos y gastos de forma simple y segura desde un solo lugar.
-        </p>
-      </div>
+      <h2>Bienvenido de nuevo</h2>
+      <p class="subtitle">
+        &iquest;No tienes cuenta?
+        <a href="#" (click)="$event.preventDefault()">Crea una nueva ahora</a>
+      </p>
 
-      <div class="copyright">© 2025 Control de Gastos. All rights reserved.</div>
-    </aside>
+      @if (errorMessage()) {
+        <div class="error" role="alert">{{ errorMessage() }}</div>
+      }
 
-    <main class="panel-right">
-      <div class="form-box">
-        <div class="brand-inline">
-          <img src="logo.png" alt="Logo" class="logo" />
-          <span class="brand-name">Control de Gastos</span>
+      <form (ngSubmit)="handleLogin()">
+        <div class="field">
+          <input
+            id="email"
+            name="email"
+            type="email"
+            [(ngModel)]="email"
+            placeholder="Correo electronico"
+            autocomplete="email"
+            required
+          />
         </div>
 
-        <h2>Bienvenido de nuevo</h2>
-        <p class="subtitle">
-          ¿No tienes cuenta?
-          <a href="#" (click)="$event.preventDefault()">Crea una nueva ahora</a>
-        </p>
-
-        @if (errorMessage()) {
-          <div class="error" role="alert">{{ errorMessage() }}</div>
-        }
-
-        <form (ngSubmit)="handleLogin()">
-          <div class="field">
-            <input
-              id="email"
-              name="email"
-              type="email"
-              [(ngModel)]="email"
-              placeholder="Email"
-              autocomplete="email"
-              required
-            />
-          </div>
-
-          <div class="field password-field">
-            <input
-              id="password"
-              name="password"
-              [type]="showPassword() ? 'text' : 'password'"
-              [(ngModel)]="password"
-              placeholder="Password"
-              autocomplete="current-password"
-              required
-            />
-            <button
-              type="button"
-              class="eye-toggle"
-              (click)="showPassword.set(!showPassword())"
-              [attr.aria-label]="showPassword() ? 'Ocultar contraseña' : 'Mostrar contraseña'"
-            >
-              @if (showPassword()) {
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  width="20"
-                  height="20"
-                  viewBox="0 0 24 24"
-                  fill="none"
-                  stroke="currentColor"
-                  stroke-width="2"
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                >
-                  <path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94"></path>
-                  <path d="M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19"></path>
-                  <path d="M14.12 14.12a3 3 0 1 1-4.24-4.24"></path>
-                  <line x1="1" y1="1" x2="23" y2="23"></line>
-                </svg>
-              } @else {
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  width="20"
-                  height="20"
-                  viewBox="0 0 24 24"
-                  fill="none"
-                  stroke="currentColor"
-                  stroke-width="2"
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                >
-                  <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
-                  <circle cx="12" cy="12" r="3"></circle>
-                </svg>
-              }
-            </button>
-          </div>
-
-          <button type="submit" class="btn-primary" [disabled]="loading()">
-            {{ loading() ? 'Iniciando...' : 'Iniciar sesión' }}
+        <div class="field password-field">
+          <input
+            id="password"
+            name="password"
+            [type]="showPassword() ? 'text' : 'password'"
+            [(ngModel)]="password"
+            placeholder="Contrasena"
+            autocomplete="current-password"
+            required
+          />
+          <button
+            type="button"
+            class="eye-toggle"
+            (click)="showPassword.set(!showPassword())"
+            [attr.aria-label]="showPassword() ? 'Ocultar contrasena' : 'Mostrar contrasena'"
+          >
+            @if (showPassword()) {
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                width="20"
+                height="20"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+              >
+                <path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94"></path>
+                <path d="M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19"></path>
+                <path d="M14.12 14.12a3 3 0 1 1-4.24-4.24"></path>
+                <line x1="1" y1="1" x2="23" y2="23"></line>
+              </svg>
+            } @else {
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                width="20"
+                height="20"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+              >
+                <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
+                <circle cx="12" cy="12" r="3"></circle>
+              </svg>
+            }
           </button>
-        </form>
-
-        <div class="google-container">
-          <div #googleButton></div>
         </div>
 
-        <div class="forgot-row">
-          <a href="#" (click)="$event.preventDefault()" class="forgot-link">
-            Forgot password? Click here
-          </a>
-        </div>
+        <button type="submit" class="btn-primary" [disabled]="loading()">
+          {{ loading() ? 'Iniciando...' : 'Iniciar sesion' }}
+        </button>
+      </form>
+
+      <div class="google-container">
+        <div #googleButton></div>
       </div>
-    </main>
-  </div>
-}
+
+      <div class="forgot-row">
+        <a href="#" (click)="$event.preventDefault()" class="forgot-link">
+          &iquest;Olvido su contrasena?
+        </a>
+      </div>
+    </div>
+  </main>
+</div>
